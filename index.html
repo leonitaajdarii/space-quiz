@@ -494,9 +494,10 @@
     let currentQuestion = 0;
     let score = 0;
     let answered = false;
+    let questionOrder = questions.map((_, index) => index);
 
     function renderQuestion() {
-      const item = questions[currentQuestion];
+      const item = questions[questionOrder[currentQuestion]];
       answered = false;
       topicElement.textContent = item.topic;
       questionElement.textContent = item.question;
@@ -524,7 +525,7 @@
     function selectAnswer(selectedIndex) {
       if (answered) return;
       answered = true;
-      const item = questions[currentQuestion];
+      const item = questions[questionOrder[currentQuestion]];
       const buttons = answersElement.querySelectorAll(".answer");
       const isCorrect = selectedIndex === item.correct;
 
@@ -570,6 +571,7 @@
       currentQuestion = 0;
       score = 0;
       scoreElement.textContent = "0";
+      shuffleQuestionOrder();
       document.getElementById("progress-wrap").hidden = false;
       quizCard.innerHTML = `
         <p class="eyebrow" id="question-topic"></p>
@@ -579,6 +581,21 @@
         <div class="card-footer"><button class="next-button" id="next-button" type="button"></button></div>`;
       bindQuestionElements();
       renderQuestion();
+    }
+
+    function shuffleQuestionOrder() {
+      const shuffledOrder = questions.map((_, index) => index);
+
+      for (let index = shuffledOrder.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffledOrder[index], shuffledOrder[randomIndex]] = [shuffledOrder[randomIndex], shuffledOrder[index]];
+      }
+
+      if (shuffledOrder.every((questionIndex, index) => questionIndex === questionOrder[index])) {
+        [shuffledOrder[0], shuffledOrder[1]] = [shuffledOrder[1], shuffledOrder[0]];
+      }
+
+      questionOrder = shuffledOrder;
     }
 
     function bindQuestionElements() {
