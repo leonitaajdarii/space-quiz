@@ -481,6 +481,15 @@
       }
     ];
 
+    const bestScoreKey = "orbit-best-score";
+    const savedBestScore = localStorage.getItem(bestScoreKey);
+    const parsedBestScore = savedBestScore !== null && /^\d+$/.test(savedBestScore)
+      ? Number(savedBestScore)
+      : null;
+    let bestScore = Number.isInteger(parsedBestScore) && parsedBestScore >= 0 && parsedBestScore <= questions.length
+      ? parsedBestScore
+      : null;
+
     const scoreElement = document.getElementById("score");
     const countElement = document.getElementById("question-count");
     const progressTrack = document.getElementById("progress-track");
@@ -552,6 +561,11 @@
 
     function showResults() {
       document.getElementById("progress-wrap").hidden = true;
+      if (bestScore === null || score > bestScore) {
+        bestScore = score;
+        localStorage.setItem(bestScoreKey, String(bestScore));
+      }
+
       const reaction = score === 10 ? "🏆" : score >= 7 ? "🚀" : score >= 4 ? "🌙" : "🪐";
       const heading = score === 10 ? "Out of this world!" : score >= 7 ? "Stellar work!" : score >= 4 ? "Nice orbit!" : "Keep exploring!";
       quizCard.innerHTML = `
@@ -559,7 +573,7 @@
           <div class="result-emoji" aria-hidden="true">${reaction}</div>
           <p class="eyebrow">Mission complete</p>
           <h1>${heading}</h1>
-          <p class="result-copy">You got <span class="result-score">${score} out of ${questions.length}</span> questions right.<br>There's always more universe to discover.</p>
+          <p class="result-copy">You got <span class="result-score">${score} out of ${questions.length}</span> questions right.<br>Personal best: <span class="result-score">${bestScore} out of ${questions.length}</span>.<br>There's always more universe to discover.</p>
           <button class="next-button visible" id="restart-button" type="button">Play again <span aria-hidden="true">↻</span></button>
         </div>`;
       document.getElementById("restart-button").addEventListener("click", restart);
