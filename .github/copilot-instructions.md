@@ -2,24 +2,17 @@
 
 ## Build, test, and lint
 
-- The app is a standalone `index.html`; open it directly in a browser to run it.
-- No build, lint, or automated test commands are configured. There is no test runner or single-test command.
-- Test every app change in the integrated browser before finishing; check affected behavior, including score/progress and results when relevant.
+- Run the standalone app by opening `index.html` directly in a browser.
+- No build, lint, or automated test commands are configured. Test each app change in the integrated browser; for quiz-flow changes, check feedback, score, progress, results, and restart as relevant.
 
 ## Architecture
 
-- The quiz is intentionally self-contained in `index.html`: markup, CSS, question data, and browser-side JavaScript all live in that file. There is no server or dependency setup.
-- The `questions` array is the source of truth for quiz content. Each entry contains a topic, question, four answers, the zero-based correct-answer index, and an explanatory fact.
-- Quiz state (`currentQuestion`, `score`, and `answered`) is managed in the inline script. `renderQuestion`, `selectAnswer`, `showResults`, and `restart` drive the question, feedback, results, and replay views.
-- The initial quiz markup is in the document; the results and replay flows update the quiz card and rebind its controls. Keep element references in sync when changing that generated markup.
+- Keep the app in the single, dependency-free `index.html`; its markup, CSS, question data, and JavaScript run locally without a server.
+- The `questions` array is the source for each question, four answers, the zero-based correct-answer index, and its feedback fact. Quiz state is managed by `renderQuestion`, `selectAnswer`, `showResults`, and `restart`.
+- Results and replay replace quiz-card markup and rebind controls. Keep element references and event handlers aligned with generated markup.
 
-## Project conventions
+## Conventions
 
-- Keep all app code in the single `index.html`; it must remain dependency-free and directly runnable as a local file.
-- Use clear camelCase names and modern JavaScript (`const`, `let`, and arrow functions; never `var`).
-- Make small, focused changes; do not modify unrelated code. Add short comments only for non-obvious logic.
-- Keep the app responsive on mobile and accessible with keyboard controls, visible focus, and sufficient contrast.
-- Define visual tokens as CSS custom properties on `:root`, and provide dark-theme overrides with `prefers-color-scheme: dark`.
-- Honor `prefers-reduced-motion` for animation and transitions.
-- Use native `button` controls for answers and actions, and maintain the progress bar's accessible label and `aria-valuenow` as questions advance.
-- Keep question content in the `questions` array rather than duplicating it in the markup or quiz logic.
+- Keep changes small and focused; do not modify unrelated code. Use clear camelCase names, `const`/`let`, and arrow functions; never use `var`. Comment only non-obvious logic.
+- Keep the quiz responsive and accessible: use native buttons, preserve visible keyboard focus and sufficient contrast, and update the progress bar's accessible value as questions advance.
+- Define visual tokens on `:root`; preserve dark-mode overrides via `prefers-color-scheme: dark` and honor `prefers-reduced-motion`.
